@@ -40,8 +40,6 @@ class CreateTaskManagementTable extends Migration
      */
     public function down()
     {
-        Schema::table('TaskManagement', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('TaskManagement');
     }
 }

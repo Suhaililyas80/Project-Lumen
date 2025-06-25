@@ -64,4 +64,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 {
     return $this->hasMany(userActivity::class);          
 }
+public function tasks()
+{
+    return $this->hasMany(TaskManagement::class, 'user_id');    
+}
 }

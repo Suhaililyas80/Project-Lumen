@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
     dirname(__DIR__)
@@ -61,7 +61,7 @@ class_alias(Illuminate\Support\Facades\Mail::class, 'Mail');
 $app->configure('app');
 $app->configure('database');
 $app->configure('jwt');
-$app->configure( 'mail');
+$app->configure('mail');
 
 /*
 |--------------------------------------------------------------------------
@@ -80,6 +80,7 @@ $app->configure( 'mail');
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
+    'auth:api' => App\Http\Middleware\Authenticate::class,
 ]);
 
 // CorsMiddleware
@@ -128,7 +129,7 @@ $app->bind(
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {
-    require __DIR__.'/../routes/web.php';
+    require __DIR__ . '/../routes/web.php';
 });
 
 return $app;

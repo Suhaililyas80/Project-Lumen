@@ -8,13 +8,20 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class TaskManagement extends Model
 {
-    use SoftDeletes;
+    //use SoftDeletes;
 
     protected $table = 'taskmanagement'; // Important!
 
     protected $fillable = [
-        'user_id', 'title', 'description', 'assignedby', 'start_date', 'end_date','status'
+        'user_id',
+        'title',
+        'description',
+        'assigned_by',
+        'start_date',
+        'end_date',
+        'status'
     ];
+
 
     public function user()
     {
