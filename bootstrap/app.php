@@ -21,9 +21,8 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
-// $app->withFacades();
-
-// $app->withEloquent();
+$app->withFacades();
+$app->withEloquent();
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +45,8 @@ $app->singleton(
     App\Console\Kernel::class
 );
 
+class_alias(Illuminate\Support\Facades\Mail::class, 'Mail');
+
 /*
 |--------------------------------------------------------------------------
 | Register Config Files
@@ -58,6 +59,9 @@ $app->singleton(
 */
 
 $app->configure('app');
+$app->configure('database');
+$app->configure('jwt');
+$app->configure( 'mail');
 
 /*
 |--------------------------------------------------------------------------
@@ -74,9 +78,14 @@ $app->configure('app');
 //     App\Http\Middleware\ExampleMiddleware::class
 // ]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+$app->routeMiddleware([
+    'auth' => App\Http\Middleware\Authenticate::class,
+]);
+
+// CorsMiddleware
+$app->middleware([
+    App\Http\Middleware\CorsMiddleware::class
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -89,8 +98,12 @@ $app->configure('app');
 |
 */
 
-// $app->register(App\Providers\AppServiceProvider::class);
-// $app->register(App\Providers\AuthServiceProvider::class);
+$app->register(App\Providers\AppServiceProvider::class);
+$app->register(App\Providers\AuthServiceProvider::class);
+$app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+$app->register(LaravelDoctrine\Migrations\MigrationsServiceProvider::class);
+$app->register(Illuminate\Mail\MailServiceProvider::class);
+
 // $app->register(App\Providers\EventServiceProvider::class);
 
 /*
@@ -103,6 +116,14 @@ $app->configure('app');
 | can respond to, as well as the controllers that may handle them.
 |
 */
+
+$app->bind(
+    App\Services\AuthService::class,
+    function ($app) {
+        return new App\Services\AuthService();
+    }
+);
+
 
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
