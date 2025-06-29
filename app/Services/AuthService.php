@@ -23,25 +23,25 @@ class AuthService
     // Login and return JWT token
     public function login($credentials)
     {
-    
+
         $user = User::where('email', $credentials['email'])->first();
-          if ($user->email_verified_at === null) {
-        return [
-            'success' => false,
-            'message' => 'Please Verify',
-            'status' => 401, // or 403
-        ];
-    }
-    
-         if (!$token = Auth::attempt($credentials)) {
-            return[
+        if ($user->email_verified_at === null) {
+            return [
+                'success' => false,
+                'message' => 'Please Verify',
+                'status' => 401, // or 403
+            ];
+        }
+
+        if (!$token = Auth::attempt($credentials)) {
+            return [
                 'success' => false,
                 'message' => 'Invalid credentials',
                 'status' => 401,
 
             ];
         }
-        if($user->email_verified_at !== null) {
+        if ($user->email_verified_at !== null) {
             // Log user activity
             //UserActivitys::logLogin();
             // call the UserActivitys service to log login activity
@@ -50,11 +50,12 @@ class AuthService
             $activity = new UserActivitys();
             $activity->logLogin();
 
-            return[ 
-                'success'=> true,
-                'message'=> 'Please Login now',
-                'token'=>$token,
-                    'status'=> 200,];
+            return [
+                'success' => true,
+                'message' => 'Please Login now',
+                'token' => $token,
+                'status' => 200,
+            ];
         }
     }
 
@@ -80,47 +81,65 @@ class AuthService
 
     // Register a new user
     public function register($validdatedData)
-{
-    
-    $validdatedData['password'] = Hash::make($validdatedData['password']);
-
-    $user =User::create($validdatedData);
-    // Call email verification before registration
-    //Generate a confirmation token
-    $token= str::random(32);
-    $user->confirmation_token = $token; 
-    $user->save();
-
-    $user->created_by= Auth::id() ?? null; 
-    $user->save();
-    // Assign default role if needed
-    $UserService = new UserService();
-    $UserService->assignRole($user->id, 'user'); // Assuming 'user' is the default role
-    
-    
-
-    $emailResult = $this->sendVerificationEmail($user);
-
-    return [
-        'success' => true,
-        'user' => $user,
-        'status' => 201,
-    ];
-}
-
-
-// send verification email
-     public function sendVerificationEmail($user)
     {
-        
+
+        $validdatedData['password'] = Hash::make($validdatedData['password']);
+
+        $user = User::create($validdatedData);
+        // Call email verification before registration
+        //Generate a confirmation token
+        $token = str::random(32);
+        $user->confirmation_token = $token;
+        $user->save();
+        //authuser
+        $authuser = Auth::user();
+
+        //check if authuser is admin or not
+        if ($authuser) {
+            if (!$authuser->roles->contains('role', 'admin')) {
+                return [
+                    'success' => false,
+                    'message' => 'Only admin can create users',
+                    'status' => 403, // Forbidden
+                ];
+            } else {
+                // If the user is created by an admin, set created_by to the admin's ID
+                $user->created_by = $authuser->id;
+            }
+        } else {
+            // If not, set created_by to null or handle as needed
+            $user->created_by = null;
+        }
+        $user->save();
+        // Assign default role if needed
+        $UserService = new UserService();
+        $UserService->assignRole($user->id, 'user'); // Assuming 'user' is the default role
+
+
+
+        $emailResult = $this->sendVerificationEmail($user);
+
+        return [
+            'success' => true,
+            'user' => $user,
+            'status' => 201,
+        ];
+    }
+
+
+    // send verification email
+    public function sendVerificationEmail($user)
+    {
+
         //$token = JWTAuth::fromUser($user);
         $verification_link = url('/verify-email?token=' . urlencode($user->confirmation_token));
         $data = [
             'name' => $user['name'],
             'email' => $user['email'],
-            'verification_link' => $verification_link,];
-        
-        
+            'verification_link' => $verification_link,
+        ];
+
+
         Mail::send('emails.confirm', $data, function ($message) use ($user) {
             $message->to($user['email'], $user['name'])
                 ->subject('Email Verification');
@@ -141,13 +160,13 @@ class AuthService
                 'message' => 'Invalid or expired token',
                 'status' => 404,
             ];
-        } 
+        }
         // Update the user's email_verified_at timestamp
         $user->email_verified_at = Carbon::now();
         $user->confirmation_token = null; // Clear the token after verification
         $user->save();
         //user created by other loged user 
-       
+
 
         return [
             'success' => true,
@@ -157,8 +176,9 @@ class AuthService
     }
 
     //forget password
-    public function sendPasswordResetEmail($email){
-        $user=User::Where('email', $email)->first();
+    public function sendPasswordResetEmail($email)
+    {
+        $user = User::Where('email', $email)->first();
         if (!$user) {
             return [
                 'success' => false,
@@ -185,7 +205,7 @@ class AuthService
             'success' => true,
             'message' => 'Password reset email sent.',
             'status' => 200,
-        ];          
+        ];
     }
     // Reset password using token
     public function resetPassword($token, $newPassword)
@@ -211,7 +231,7 @@ class AuthService
             'status' => 200,
         ];
     }
-    
+
     public function softDeleteUser($userId)
     {
         $user = User::find($userId);
@@ -223,7 +243,7 @@ class AuthService
             ];
         }
         $authUser = Auth::user();
-        if(!$authUser){
+        if (!$authUser) {
             return [
                 $user->deleted_by = null,
                 $user->save(),
@@ -235,18 +255,18 @@ class AuthService
         }
         $authUserRole = IdRole::find($authUser->role_id);
 
-    // Only allow if admin (by role name, not id)
-       if (!$authUserRole || strtolower($authUserRole->role) !== 'admin' || $authUser->id === $user->id) {
-        return [
-            'success' => false,
-            'message' => 'You do not have permission to delete this user',
-            'status' => 403,
-        ];
-          }
-    // Soft delete the user
-    $user->deleted_by = $authUser->id ?? null;
-    $user->save();
-    $user->delete();
+        // Only allow if admin (by role name, not id)
+        if (!$authUserRole || strtolower($authUserRole->role) !== 'admin' || $authUser->id === $user->id) {
+            return [
+                'success' => false,
+                'message' => 'You do not have permission to delete this user',
+                'status' => 403,
+            ];
+        }
+        // Soft delete the user
+        $user->deleted_by = $authUser->id ?? null;
+        $user->save();
+        $user->delete();
 
         return [
             'success' => true,

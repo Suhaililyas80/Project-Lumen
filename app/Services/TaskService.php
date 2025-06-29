@@ -18,11 +18,21 @@ class TaskService
         }
         $data['assigned_by'] = $user->id;
         $data['start_date'] = Carbon::now();
+        //end_date must be greater than start_date and equal to start_date
+        if (
+            isset($data['end_date'], $data['start_date']) &&
+            Carbon::parse($data['end_date'])->toDateString() < Carbon::parse($data['start_date'])->toDateString()
+        ) {
+            throw new \Exception('End date must be greater than or equal to the start date.', 422);
+        }
+
         $data['status'] = 'pending'; // Default status, can be changed later
 
         try {
             $task = TaskManagement::create($data);
             return [
+                'success' => true,
+                'message' => 'Task created successfully',
                 'data' => $task,
                 'status' => 201,
             ];
@@ -74,7 +84,10 @@ class TaskService
             if ($task->assigned_by !== $user->id) {
                 throw new \Exception('Unauthorized action, you do not have permission to delete this task.', 403);
             }
-            $task->delete();
+            // Soft delete the task
+            $task->deleted_at = Carbon::now();
+            $task->save();
+
             return [
                 'success' => true,
                 'message' => 'Task deleted successfully',
@@ -123,7 +136,8 @@ class TaskService
         if (isset($filters['title'])) {
             $query->where('title', 'like', '%' . $filters['title'] . '%');
         }
-        $tasks = $query->paginate($perPage, ['*'], 'page', $page);
+
+        $tasks = $query->limit($perPage)->offset(($page - 1) * $perPage)->get();
 
         return [
             'data' => $tasks,
@@ -143,6 +157,11 @@ class TaskService
             'message' => 'Task details retrieved successfully',
             'status' => 200,
         ];
+    }
+
+    public function getNumberOfTasksByStatus(int $status)
+    {
+
     }
 }
 // service level cleanup

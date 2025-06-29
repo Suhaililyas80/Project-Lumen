@@ -27,7 +27,6 @@ class CreateTaskManagementTable extends Migration
             $table->dateTime('end_date')->nullable();
             $table->enum('status', ['pending', 'in_progress', 'completed', 'deleted'])->default('pending');
             $table->timestamps();
-
             // Foreign key constraint
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

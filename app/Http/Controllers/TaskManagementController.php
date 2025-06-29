@@ -48,10 +48,9 @@ class TaskManagementController extends Controller
     public function updateTask(Request $request, $taskId)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'end_date' => 'nullable|date', // match model's field, if you want 'due_date', update model too
-            //'status'     => 'required|in:pending,completed',
+            'title' => 'sometimes|required|string|max:255',
+            'description' => 'sometimes|nullable|string',
+            'end_date' => 'sometimes|nullable|date',
         ]);
         if ($validator->fails()) {
             return response()->json([

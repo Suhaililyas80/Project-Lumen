@@ -12,10 +12,11 @@ use App\Models\Role;
 use App\Models\UserActivity;
 use Illuminate\Support\Facades\Validator;
 
-class UserController extends Controller {
+class UserController extends Controller
+{
 
 
-protected $userService;
+    protected $userService;
     public function __construct()
     {
         // Dependency injection of AuthService
@@ -61,18 +62,19 @@ protected $userService;
         return response()->json($users, 200); // response formatting
     }
 
-    public function getalladmins(Request $request){
+    public function getalladmins(Request $request)
+    {
         $this->validate($request, [
             'page' => 'integer|min:1',
             'per_page' => 'integer|min:1|max:100',
             'role' => 'string|exists:idrole,role|nullable', // Assuming 'admin' is a role in the roles table
         ]);
 
-        $filters = [];      
+        $filters = [];
         $filters['role'] = $request->input('role'); // Assuming 'admin' is a filter for admin users
         //for pagination
-        $page = $request->input('page',1);  
-        $perPage = $request->input('',10);
+        $page = $request->input('page', 1);
+        $perPage = $request->input('', 10);
         $admins = $this->userService->userlisting($filters, $page, $perPage);
         return response()->json($admins, 200); // response formatting
     }
@@ -83,7 +85,7 @@ protected $userService;
         $this->validate($request, [
             'ids' => 'required|array',
             'ids.*' => 'exists:users,id',
-        ]);         
+        ]);
         // Call the service to delete multiple users
         $response = $this->userService->multipleUserDelete($request->input('ids'));
         return response()->json($response, $response['status']); // response formatting
@@ -106,7 +108,8 @@ protected $userService;
 
 
     /// list user activities
-     public function userActivities(Request $request){
+    public function userActivities(Request $request)
+    {
         //if i am passing no parameters, it will return all activities
         //if i am passing user_id, it will return activities of that user
         //if i am passing email, it will return activities of that user
@@ -131,5 +134,30 @@ protected $userService;
         $activity = new UserActivitys();
         $activities = $activity->getUserActivity($filters, $page, $perPage);
         return response()->json($activities, 200); // response formatting
-     }
+    }
+
+    //get user detail by token
+    public function getUserDetail(Request $request)
+    {
+        // Get the authenticated user
+        $user = $request->user();
+        // also atach roles to user then send response
+        if ($user) {
+            $user->roles = $user->roles()->get(); // Eager load roles
+        }
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not authenticated',
+                'status' => 401,
+            ], 401);
+        }
+        // Return user details
+        return response()->json([
+            'success' => true,
+            'data' => $user,
+            'status' => 200,
+        ], 200);
+    }
 }

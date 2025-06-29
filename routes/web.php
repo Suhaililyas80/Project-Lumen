@@ -53,6 +53,7 @@ $router->post('auth/user-listing', 'UserController@userlist');
 $router->post('auth/multiple-user-delete', 'UserController@multipleUserDelete');
 // $router->post('auth/get-all-loggedinusers','UserController@getallloggedinusers');
 $router->post('auth/get-all-user-activities', 'UserController@userActivities');
+$router->post('auth/get-user-detail', 'UserController@getUserDetail');
 
 $router->group([
     'middleware' => 'auth:api',
@@ -63,4 +64,6 @@ $router->group([
     $router->post('update-task-status/{taskId}', 'TaskManagementController@updateTaskStatus');
     $router->post('get-tasks', 'TaskManagementController@getTasks');
     $router->post('get-task-detail/{taskId}', 'TaskManagementController@getTaskDetail');
+    $router->post('get-number-of-tasks-bystatus', 'TaskAnalyticsController@getNumberOfTasksByStatus');
+    $router->post('get-tasks-duetoday', 'TaskAnalyticsController@getTasksDueToday');
 });
