@@ -62,6 +62,8 @@ $app->configure('app');
 $app->configure('database');
 $app->configure('jwt');
 $app->configure('mail');
+$app->configure('view');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -104,6 +106,9 @@ $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 $app->register(LaravelDoctrine\Migrations\MigrationsServiceProvider::class);
 $app->register(Illuminate\Mail\MailServiceProvider::class);
+$app->register(Illuminate\View\ViewServiceProvider::class);
+$app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+
 
 // $app->register(App\Providers\EventServiceProvider::class);
 

@@ -11,11 +11,15 @@ class Useractivity extends Model
     protected $table = 'useractivity'; // Important!
 
     protected $fillable = [
-        'user_id', 'email', 'login_time', 'logout_time', 'duration',
+        'user_id',
+        'email',
+        'login_time',
+        'logout_time',
+        'duration',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id','id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

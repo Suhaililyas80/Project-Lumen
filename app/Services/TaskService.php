@@ -30,6 +30,8 @@ class TaskService
 
         try {
             $task = TaskManagement::create($data);
+            // Notify the user about the task creation
+            $this->notifyUserAboutTask($task->id, 'assigned');
             return [
                 'success' => true,
                 'message' => 'Task created successfully',
@@ -58,6 +60,8 @@ class TaskService
         }
         try {
             $task->update($data);
+            // Notify the user about the task update
+            $this->notifyUserAboutTask($task->id, 'updated');
             return [
                 'data' => $task,
                 'status' => 200,
@@ -70,6 +74,42 @@ class TaskService
             ];
         }
     }
+
+    //notify user about task creation and update done by admin
+
+    public function notifyUserAboutTask(int $id, $type = 'assigned')
+    {
+        $task = TaskManagement::find($id);
+        if (!$task) {
+            throw new \Exception('Task not found', 404);
+        }
+
+        $user = User::find($task->user_id);
+        if ($user && $user->email) {
+            $data = [
+                'user' => $user,
+                'task' => $task,
+                'type' => $type, // 'assigned' or 'updated'
+            ];
+            \Mail::send('emails.task_notification', $data, function ($message) use ($user, $type) {
+                $subject = $type === 'assigned'
+                    ? 'A new task has been assigned to you'
+                    : 'A task assigned to you has been updated';
+                $message->to($user->email, $user->name)
+                    ->subject($subject);
+            });
+
+            return [
+                'success' => true,
+                'message' => 'Notification sent',
+                'status' => 200,
+            ];
+        } else {
+            throw new \Exception('User email not found', 404);
+        }
+    }
+
+
 
     public function updateTaskStatus(int $id, string $status)
     {
@@ -115,6 +155,8 @@ class TaskService
         }
     }
 
+
+
     public function getTasks(array $filters = [], $page = 1, $perPage = 10)
     {
 
@@ -159,10 +201,7 @@ class TaskService
         ];
     }
 
-    public function getNumberOfTasksByStatus(int $status)
-    {
 
-    }
 }
 // service level cleanup
 // sorting backend
