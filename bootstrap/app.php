@@ -63,6 +63,7 @@ $app->configure('database');
 $app->configure('jwt');
 $app->configure('mail');
 $app->configure('view');
+$app->configure('broadcasting');
 
 
 /*
@@ -108,6 +109,7 @@ $app->register(LaravelDoctrine\Migrations\MigrationsServiceProvider::class);
 $app->register(Illuminate\Mail\MailServiceProvider::class);
 $app->register(Illuminate\View\ViewServiceProvider::class);
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+$app->register(Illuminate\Broadcasting\BroadcastServiceProvider::class);
 
 
 // $app->register(App\Providers\EventServiceProvider::class);

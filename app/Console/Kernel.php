@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 class Kernel extends ConsoleKernel
 {
     protected $commands = [
-        \App\Console\Commands\SendTaskReminder::class,
+        Commands\SendTaskReminder::class,
     ];
 
     protected function schedule(Schedule $schedule)

@@ -25,7 +25,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','Confirmation token',
+        'name',
+        'email',
+        'password',
+        'Confirmation token',
     ];
 
     /**
@@ -34,7 +37,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $hidden = [
-        'password','confirmation_token'
+        'password',
+        'confirmation_token'
     ];
 
     public function getJWTIdentifier()
@@ -52,20 +56,25 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return [];
     }
 
-    public function roles(){
+    public function roles()
+    {
         return $this->belongsToMany(IdRole::class, 'roleuser', 'user_id', 'role_id');
     }
     public function creator()
-{
-    return $this->belongsTo(User::class, 'created_by');
-}
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 
- public function userActivity()
-{
-    return $this->hasMany(userActivity::class);          
-}
-public function tasks()
-{
-    return $this->hasMany(TaskManagement::class, 'user_id');    
-}
+    public function userActivity()
+    {
+        return $this->hasMany(userActivity::class);
+    }
+    public function tasks()
+    {
+        return $this->hasMany(TaskManagement::class, 'user_id');
+    }
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
 }

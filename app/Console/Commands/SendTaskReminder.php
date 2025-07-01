@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class SendTaskReminder extends Command
 {
@@ -13,12 +14,13 @@ class SendTaskReminder extends Command
 
     public function handle()
     {
+        Log::info("Starting task reminder email sending process...");
         $users = User::whereHas('tasks', function ($q) {
             $q->whereIn('status', ['pending', 'in-progress']);
         })->get();
 
         $period = 'daily'; // or 'weekly', etc.
-
+        var_dump("hereeee");
         foreach ($users as $user) {
             $tasks = $user->tasks()->whereIn('status', ['pending', 'in-progress'])->get();
             if ($tasks->count() > 0) {
@@ -30,6 +32,7 @@ class SendTaskReminder extends Command
                     $message->to($user->email, $user->name)
                         ->subject("Your {$period} task reminder");
                 });
+                Log::info("Sending task reminder email to {$user->email}");
             }
         }
         $this->info("Task daily reminders sent!");

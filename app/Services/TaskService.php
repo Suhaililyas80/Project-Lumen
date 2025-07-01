@@ -6,6 +6,9 @@ use App\Models\IdRole;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Events\TaskCreated;
+use App\Models\Notification;
+use Illuminate\Support\Str;
 
 class TaskService
 {
@@ -32,6 +35,20 @@ class TaskService
             $task = TaskManagement::create($data);
             // Notify the user about the task creation
             $this->notifyUserAboutTask($task->id, 'assigned');
+            // notify the user about the task creation
+            //store the task creation event in table
+            Notification::create([
+                'type' => 'task_created',
+                'user_id' => $task->user_id,
+                'data' => json_encode([
+                    'title' => $task->title,
+                    'description' => $task->description,
+                    'end_date' => $task->end_date,
+                ]),
+            ]);
+            // Fire the event to notify the user
+            // This will broadcast the event to the user
+            event(new TaskCreated($task->user_id, $task->title, $task->description, $task->end_date));
             return [
                 'success' => true,
                 'message' => 'Task created successfully',
