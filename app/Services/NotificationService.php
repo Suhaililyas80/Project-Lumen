@@ -24,7 +24,7 @@ class NotificationService
         // get the user all data and notification ids ordered by created_at
         $notifications = Notification::where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
-            ->get(['id', 'data']);
+            ->get(['id', 'data', 'read_at']);
         return $notifications;
     }
 }

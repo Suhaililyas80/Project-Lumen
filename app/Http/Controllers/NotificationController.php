@@ -9,20 +9,22 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Services\NotificationService;
+use Carbon\Carbon;
 
 class NotificationController extends Controller
 {
 
 
     // Mark a notification as read
-    public function markAsRead(Request $request, $id)
+    public function markAsRead(Request $request, $notificationId)
     {
         $user = Auth::user();
-        $notification = $user->notifications()->find($id);
+        $notification = $user->notifications()->find($notificationId);
         if (!$notification) {
             return response()->json(['message' => 'Notification not found'], 404);
         }
-        $notification->markAsRead();
+        $notification->read_at = Carbon::now();
+        $notification->save(); // Pass the notification instance as required by the overridden save() method
         return response()->json(['message' => 'Notification marked as read']);
     }
     //count number of notifications using auth user

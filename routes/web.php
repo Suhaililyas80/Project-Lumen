@@ -69,4 +69,5 @@ $router->group([
     $router->post('notify-user', 'TaskNotificationController@notifyuser');
     $router->post('count-notification-of-user', 'NotificationController@countnotificationofuser');
     $router->post('get-all-notifications', 'NotificationController@getallnotifications');
+    $router->post('mark-as-read/{notificationId}', 'NotificationController@markAsRead');
 });

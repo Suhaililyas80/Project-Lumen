@@ -54,6 +54,7 @@ class AuthService
                 'success' => true,
                 'message' => 'Please Login now',
                 'token' => $token,
+                'user_id' => $user->id,
                 'status' => 200,
             ];
         }
