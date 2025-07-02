@@ -35,12 +35,16 @@ class TaskAnalyticsController extends Controller
     {
         $today = Carbon::now()->toDateString(); // Get today's date in 'Y-m-d' format
         // need count of tasks due today
-        $taskCount = TaskManagement::whereDate('end_date', $today)
+        $taskduetoday = TaskManagement::whereDate('end_date', $today)
             ->where('status', '!=', 'completed') // Exclude completed tasks
-            ->count();
+            ->get();
+        $taskCount = $taskduetoday->count();
         return response()->json([
             'success' => true,
-            'data' => $taskCount,
+            'data' => [
+                'count' => $taskCount,
+                'tasks' => $taskduetoday,
+            ],
             'message' => 'Tasks due today retrieved successfully',
             'status' => 200,
         ]);
