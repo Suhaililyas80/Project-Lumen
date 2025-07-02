@@ -20,7 +20,6 @@ class SendTaskReminder extends Command
         })->get();
 
         $period = 'daily'; // or 'weekly', etc.
-        var_dump("hereeee");
         foreach ($users as $user) {
             $tasks = $user->tasks()->whereIn('status', ['pending', 'in-progress'])->get();
             if ($tasks->count() > 0) {

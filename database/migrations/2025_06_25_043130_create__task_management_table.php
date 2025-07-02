@@ -13,7 +13,7 @@ class CreateTaskManagementTable extends Migration
      */
     public function up()
     {
-        Schema::create('TaskManagement', function (Blueprint $table) {
+        Schema::create('taskmanagement', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('title')->nullable();
@@ -39,6 +39,6 @@ class CreateTaskManagementTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('TaskManagement');
+        Schema::dropIfExists('taskmanagement');
     }
 }

@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command("task:send-reminder")->everyMinute();
+        // Schedule the task reminder command to run daily at 10 PM
+        $schedule->command('task:send-reminder')->dailyAt('22:00');
     }
 }
