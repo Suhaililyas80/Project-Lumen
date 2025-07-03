@@ -5,6 +5,17 @@ This backend provides authentication, user management, task management, analytic
 
 ---
 
+## Requirements
+
+- **PHP:** 7.4
+- **Composer:** For dependency management
+- **MySQL:** For database
+- **[Lumen Installer](https://lumen.laravel.com/docs/6.x/installation)** (optional, for development convenience)
+- **Mail Server/SMTP credentials** (for sending emails)
+- **Docker**
+
+---
+
 ## Framework & Design
 
 - **Framework:** Lumen (micro-framework by Laravel 6.x)
