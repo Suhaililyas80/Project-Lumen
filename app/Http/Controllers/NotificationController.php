@@ -19,13 +19,8 @@ class NotificationController extends Controller
     public function markAsRead(Request $request, $notificationId)
     {
         $user = Auth::user();
-        $notification = $user->notifications()->find($notificationId);
-        if (!$notification) {
-            return response()->json(['message' => 'Notification not found'], 404);
-        }
-        $notification->read_at = Carbon::now();
-        $notification->save(); // Pass the notification instance as required by the overridden save() method
-        return response()->json(['message' => 'Notification marked as read']);
+        $notificationService = new NotificationService();
+        return $notificationService->markAsRead($user, $notificationId);
     }
     //count number of notifications using auth user
     public function countnotificationofuser()

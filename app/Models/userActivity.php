@@ -7,8 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Useractivity extends Model
 {
-    //use SoftDeletes;
-    protected $table = 'useractivity'; // Important!
+    protected $table = 'useractivity';
 
     protected $fillable = [
         'user_id',

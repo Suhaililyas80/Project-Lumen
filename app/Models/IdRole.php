@@ -1,15 +1,7 @@
 <?php
 
 namespace App\Models;
-
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Lumen\Auth\Authorizable;
-
-// Uncomment if you really want JWT on Role
-// use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class IdRole extends Model
 {
@@ -19,22 +11,10 @@ class IdRole extends Model
     protected $primaryKey = 'role_id';
 
     protected $fillable = [
-         'role',
+        'role',
     ];
-    public function users(){
-        return $this->belongsToMany(User::class,'roleuser','role_id','user_id');
-    }
-
-    // Only include JWT methods if you want JWT authentication for Role model
-    /*
-    public function getJWTIdentifier()
+    public function users()
     {
-        return $this->getKey();
+        return $this->belongsToMany(User::class, 'roleuser', 'role_id', 'user_id');
     }
-
-    public function getJWTCustomClaims()
-    {
-        return [];
-    }
-    */
 }

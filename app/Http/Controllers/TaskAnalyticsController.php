@@ -33,18 +33,12 @@ class TaskAnalyticsController extends Controller
     //get all tasks which have todat's date as end_date
     public function getTasksDueToday(Request $request)
     {
-        $today = Carbon::now()->toDateString(); // Get today's date in 'Y-m-d' format
-        // need count of tasks due today
-        $taskduetoday = TaskManagement::whereDate('end_date', $today)
-            ->where('status', '!=', 'completed') // Exclude completed tasks
-            ->get();
-        $taskCount = $taskduetoday->count();
+        $taskAnalyticsService = new TaskAnalytics();
+        $user = $request->user(); // Get the authenticated user
+        $result = $taskAnalyticsService->getTasksDueToday($user);
         return response()->json([
             'success' => true,
-            'data' => [
-                'count' => $taskCount,
-                'tasks' => $taskduetoday,
-            ],
+            'data' => $result,
             'message' => 'Tasks due today retrieved successfully',
             'status' => 200,
         ]);

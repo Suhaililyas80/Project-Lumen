@@ -24,7 +24,7 @@ class AuthController extends Controller
 
     //Login method
     public function login(Request $request)
-{        
+    {
         // Validate the request
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
@@ -41,8 +41,6 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
         $response = $this->authService->login($credentials);
-
-
         return response()->json($response, $response['status']);
     }
 
@@ -57,8 +55,6 @@ class AuthController extends Controller
     // Register a new user
     public function register(Request $request)
     {
-       // $data = $request->only('name', 'email', 'password', 'password_confirmation');
-        // Validate the request
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -72,47 +68,39 @@ class AuthController extends Controller
         if (!$request->has(['name', 'email', 'password'])) {
             return response()->json(['success' => false, 'message' => 'Name, email, and password are required'], 400);
         }
-        $validdatedData = $validator->validated();
-        //$credentials = $request->only('name','email','password');
-        $response = $this->authService->register($validdatedData);
+        $validdata = $validator->validated();
+        $response = $this->authService->register($validdata);
         return response()->json($response, $response['status']);
-    }  
+    }
 
     // Email verification
     public function sendVerificationEmail(Request $request)
     {
-        // You can use request data or hardcode for now
-        //validate the email
-        // $this->validate($request, [
-        //     'email' => 'required|email|exists:users,email',
-        // ]);
-
         $User = User::where('email', $request->input('email'))->first();
         if (!$User) {
             return response()->json(['success' => false, 'message' => 'User not found'], 404);
         }
-        
         $result = $this->authService->sendVerificationEmail($User);
         return response()->json($result, $result['status']);
-    
     }
-    
-   // Verify email by token
+
+    // Verify email by token
     public function verifyEmailbyToken(Request $request)
     {
         // Validate the token
         $this->validate($request, [
             'token' => 'required|string',
+            'email' => 'required|email|exists:users,email',
         ]);
-
         // Call the service
-        $result = $this->authService->verifyEmailByToken($request->input('token'));
+        $result = $this->authService->verifyEmailByToken($request->input('token'), $request->input('email'));
         return response()->json($result, $result['status']);
     }
 
 
     //forgot password
-    public function forgotPassword(Request $request){
+    public function forgotPassword(Request $request)
+    {
         // Validate the request
         $this->validate($request, [
             'email' => 'required|email|exists:users,email',
@@ -121,30 +109,18 @@ class AuthController extends Controller
         $result = $this->authService->sendPasswordResetEmail($request->input('email'));
         return response()->json($result, $result['status']);
     }
-    
+
     // reset password
     public function resetPassword(Request $request)
     {
         // Validate the request
         $this->validate($request, [
             'token' => 'required|string',
+            'email' => 'required|email|exists:users,email',
             'password' => 'required|string|min:8|confirmed',
         ]);
         // Call the service
-        $result = $this->authService->resetPassword($request->input('token'), $request->input('password'));
+        $result = $this->authService->resetPassword($request->input('token'), $request->input('email'), $request->input('password'));
         return response()->json($result, $result['status']);
     }
-
-    public function softDeleteUser(Request $request)
-    {
-        // Validate the request
-        $this->validate($request, [
-            'id' => 'required|exists:users,id',
-        ]);
-
-        // Call the service
-        $result = $this->authService->softDeleteUser($request->input('id'));
-        return response()->json($result, $result['status']);
-    }
-
 }

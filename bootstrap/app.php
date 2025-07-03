@@ -102,7 +102,7 @@ $app->middleware([
 |
 */
 
-$app->register(App\Providers\AppServiceProvider::class);
+// $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 $app->register(LaravelDoctrine\Migrations\MigrationsServiceProvider::class);
@@ -125,12 +125,12 @@ $app->register(Illuminate\Broadcasting\BroadcastServiceProvider::class);
 |
 */
 
-$app->bind(
-    App\Services\AuthService::class,
-    function ($app) {
-        return new App\Services\AuthService();
-    }
-);
+// $app->bind(
+//     App\Services\AuthService::class,
+//     function ($app) {
+//         return new App\Services\AuthService();
+//     }
+// );
 
 
 $app->router->group([

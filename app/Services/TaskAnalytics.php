@@ -12,26 +12,19 @@ class TaskAnalytics
     public function getNumberOfTasksByStatus()
     {
         $user = Auth::user();
-        if (!$user) {
-            throw new \Exception('Unauthorized action, you do not have permission to view task analytics.', 403);
-        }
-
         $statuses = ['pending', 'in_progress', 'completed'];
         $result = [];
-
         if (!$user->roles->contains('role', 'admin')) {
             // Per-user stats
             $taskCounts = TaskManagement::select('status', DB::raw('count(*) as total'))
                 ->where('user_id', $user->id)
                 ->groupBy('status')
-                ->get();
+                ->pluck('total', 'status');
 
             // Map counts by status
             foreach ($statuses as $status) {
-                $count = $taskCounts->firstWhere('status', $status);
-                $result[$status] = $count ? $count->total : 0;
+                $result[$status] = $taskCounts[$status] ?? 0;
             }
-
             $result['total'] = TaskManagement::where('user_id', $user->id)->count();
             $result['deleted'] = $user->tasks()->onlyTrashed()->count();
             return $result;
@@ -39,14 +32,32 @@ class TaskAnalytics
             // Admin: all tasks
             $taskCounts = TaskManagement::select('status', DB::raw('count(*) as total'))
                 ->groupBy('status')
-                ->get();
+                ->pluck('total', 'status');
             foreach ($statuses as $status) {
-                $count = $taskCounts->firstWhere('status', $status);
-                $result[$status] = $count ? $count->total : 0;
+                $result[$status] = $taskCounts[$status] ?? 0;
             }
             $result['total'] = TaskManagement::withTrashed()->count();
             $result['deleted'] = TaskManagement::onlyTrashed()->count();
             return $result;
         }
+    }
+    public function getTasksDueToday($user)
+    {
+
+        $today = Carbon::now()->toDateString();
+        // need count of tasks due today
+        $taskduetoday = TaskManagement::whereDate('end_date', $today)
+            ->where('status', '!=', 'completed'); // Exclude completed tasks
+        // check if user is admin or not
+        if (!$user->roles->contains('role', 'admin')) {
+            // If not admin, filter tasks by user_id
+            $taskduetoday = $taskduetoday->where('user_id', $user->id);
+        }
+        $taskduetoday = $taskduetoday->get();
+        $taskCount = $taskduetoday->count();
+        return [
+            'count' => $taskCount,
+            'tasks' => $taskduetoday
+        ];
     }
 }

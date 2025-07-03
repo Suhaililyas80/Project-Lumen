@@ -6,11 +6,21 @@ use App\Models\Notification;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
 
 
 class NotificationService
 {
-
+    public function markAsRead($user, $notificationId)
+    {
+        $notification = $user->notifications()->find($notificationId);
+        if (!$notification) {
+            return response()->json(['message' => 'Notification not found'], 404);
+        }
+        $notification->read_at = Carbon::now();
+        $notification->save(); // Pass the notification instance as required by the overridden save() method\
+        return response()->json(['message' => 'Notification marked as read']);
+    }
     public function countnotificationofuser($user)
     {
         // count only unread notifications for the authenticated user

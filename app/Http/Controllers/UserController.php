@@ -30,7 +30,7 @@ class UserController extends Controller
         // Validate the request
         $this->validate($request, [
             'user_id' => 'required|exists:users,id',
-            'role' => 'required|exists:idrole,role',
+            // 'role' => 'required|exists:idrole,role',
         ]);
         // Call the service to assign role
         $response = $this->userService->assignRole($request->input('user_id'), $request->input('role'));
@@ -62,23 +62,6 @@ class UserController extends Controller
         return response()->json($users, 200); // response formatting
     }
 
-    public function getalladmins(Request $request)
-    {
-        $this->validate($request, [
-            'page' => 'integer|min:1',
-            'per_page' => 'integer|min:1|max:100',
-            'role' => 'string|exists:idrole,role|nullable', // Assuming 'admin' is a role in the roles table
-        ]);
-
-        $filters = [];
-        $filters['role'] = $request->input('role'); // Assuming 'admin' is a filter for admin users
-        //for pagination
-        $page = $request->input('page', 1);
-        $perPage = $request->input('', 10);
-        $admins = $this->userService->userlisting($filters, $page, $perPage);
-        return response()->json($admins, 200); // response formatting
-    }
-
     public function multipleUserDelete(Request $request)
     {
         // Validate the request
@@ -98,22 +81,9 @@ class UserController extends Controller
         $loggedInUsers = $activity->getalllogedinuser();
         return response()->json($loggedInUsers, 200); // response formatting
     }
-    // public function index(){
-    //     $users =User::all();
-    //     return response()->json([
-    //         'success'=>true,
-    //         'users'=> $users
-    //     ],200);
-    // }
 
-
-    /// list user activities
     public function userActivities(Request $request)
     {
-        //if i am passing no parameters, it will return all activities
-        //if i am passing user_id, it will return activities of that user
-        //if i am passing email, it will return activities of that user
-        //if i am passing role, it will return activities of that user
         // validate the request
         $this->validate($request, [
             'page' => 'integer|min:1',

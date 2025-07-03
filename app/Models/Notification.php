@@ -19,11 +19,6 @@ class Notification extends Model
         'data',
         'read_at'
     ];
-
-    public function notifiable()
-    {
-        return $this->morphTo();
-    }
     public function user()
     {
         return $this->hasMany(User::class, 'notifiable_id', 'id');

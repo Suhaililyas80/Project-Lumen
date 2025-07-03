@@ -36,6 +36,6 @@ class TaskManagement extends Model
 
     public function updater()
     {
-        return $this->hasMany(User::class, );
+        return $this->belongsTo(User::class, );
     }
 }

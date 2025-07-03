@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Services;
 use App\Models\UserActivity;
@@ -21,8 +21,9 @@ class UserActivitys
         return null;
     }
 
-    public function logLogout(){
-        
+    public function logLogout()
+    {
+
         $user = Auth::user();
         if ($user) {
             $activity = UserActivity::where('user_id', $user->id)
@@ -39,13 +40,14 @@ class UserActivitys
         return null;
     }
 
-    public function getalllogedinuser(){
+    public function getalllogedinuser()
+    {
         $activities = UserActivity::whereNull('logout_time')
             ->orderBy('login_time', 'desc')
             ->get();
         return $activities;
     }
-    public function getUserActivity(array $filters,$page = 1, $perPage = 10)
+    public function getUserActivity(array $filters, $page = 1, $perPage = 10)
     {
         $query = UserActivity::query();
         if (isset($filters['user_id'])) {
@@ -58,6 +60,11 @@ class UserActivitys
             $query->whereHas('user.roles', function ($q) use ($filters) {
                 $q->where('role', 'like', '%' . $filters['role'] . '%');
             });
+        }
+        //admin can access all users activities , but user only access his activities
+        $authuser = Auth::user();
+        if (!$authuser->roles->contains('role', 'admin')) {
+            $query->where('user_id', $authuser->id);
         }
         $userActivities = $query->get();
         return [

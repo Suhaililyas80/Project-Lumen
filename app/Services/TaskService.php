@@ -144,7 +144,6 @@ class TaskService
             // Soft delete the task
             $task->deleted_at = Carbon::now();
             $task->save();
-
             return [
                 'success' => true,
                 'message' => 'Task deleted successfully',
@@ -217,9 +216,4 @@ class TaskService
             'status' => 200,
         ];
     }
-
-
 }
-// service level cleanup
-// sorting backend
-//task detail by taskid
