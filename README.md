@@ -1,13 +1,23 @@
-#Project-lumen
-#Overview
-This backend provides authentication, user management, task management, analytics, and notification APIs for application.
-#Framework & Design
--Framework -> Lumen(micro-framework by laravel.6x)
--Architecture -> Model-View-Controller with Services layer
--Language -> php 7.4
--Authentication -> Token-based (JWT), using Authorization: Bearer<token>in headers
--Database: MySQL
-#Folder structure
+# Project-lumen
+
+## Overview
+This backend provides authentication, user management, task management, analytics, and notification APIs for your application.
+
+---
+
+## Framework & Design
+
+- **Framework:** Lumen (micro-framework by Laravel 6.x)
+- **Architecture:** Model-View-Controller (MVC) with a Services layer
+- **Language:** PHP 7.4
+- **Authentication:** Token-based (JWT), using `Authorization: Bearer <token>` in headers
+- **Database:** MySQL
+
+---
+
+## Folder Structure
+
+```
 be/
 ├── app/
 │   ├── Console/
@@ -45,7 +55,8 @@ be/
 │   ├── jwt.php
 │   ├── mail.php
 │   └── broadcasting.php
-├── resources/views
+├── resources/
+│   └── views/
 │       └── emails/
 │           ├── confirm.blade.php
 │           ├── reset.blade.php
@@ -55,22 +66,42 @@ be/
 │   └── web.php
 ├── .env
 └── Dockerfile
+```
 
-#Controller
--act as entry points for HTTP requests
--responsible for:
-  -Validating incoming data
-  -calling appropriate service classes for business logic
-  -return JSON responses for frontend
-#Services 
--hold the core business logic
--called by controller when the data needs to be manipulated 
-#Models
--represent database tables and data logic(via Eloquent ORM)
--define relationships
-#Routes
--Define API endpoints and map them to controller
-#Running the Project
+---
+
+## Controllers
+
+- Act as entry points for HTTP requests
+- Responsible for:
+  - Validating incoming data
+  - Calling appropriate service classes for business logic
+  - Returning JSON responses for the frontend
+
+---
+
+## Services
+
+- Hold the core business logic
+- Called by controllers when data needs to be manipulated
+
+---
+
+## Models
+
+- Represent database tables and data logic (via Eloquent ORM)
+- Define relationships
+
+---
+
+## Routes
+
+- Define API endpoints and map them to controllers
+
+---
+
+## Running the Project
+
 ```bash
 php -S localhost:8000 -t public
 ```
