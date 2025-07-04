@@ -4,3 +4,7 @@ Homestead.json
 Homestead.yaml
 .env
 .phpunit.result.cache
+add.DS_Store
+.DS_Store
+.cron_test.log
+.cron.log
