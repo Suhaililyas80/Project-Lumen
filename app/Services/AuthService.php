@@ -110,7 +110,8 @@ class AuthService
     // send verification email
     public function sendVerificationEmail($user)
     {
-        $verification_link = url('/verify-email?token=' . urlencode($user->confirmation_token));
+        $frontendUrl = 'http://localhost:3000/verify-email';
+        $verification_link = $frontendUrl . '?token=' . urlencode($user['confirmation_token']) . '&email=' . urlencode($user['email']);
         $data = [
             'name' => $user['name'],
             'email' => $user['email'],
@@ -173,7 +174,8 @@ class AuthService
         $user->confirmation_token = $token; // Reusing confirmation_token for password reset
         $user->save();
         // Send reset password email
-        $reset_link = url('/reset-password?token=' . urlencode($token));
+        $frontendUrl = 'http://localhost:3000/reset-password';
+        $reset_link = $frontendUrl . '?token=' . urlencode($token) . '&email=' . urlencode($user->email);
         $data = [
             'name' => $user->name,
             'email' => $user->email,

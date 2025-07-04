@@ -42,10 +42,12 @@ $router->group([
     $router->post('update-task-status/{taskId}', 'TaskManagementController@updateTaskStatus');
     $router->post('get-tasks', 'TaskManagementController@getTasks');
     $router->post('get-task-detail/{taskId}', 'TaskManagementController@getTaskDetail');
+
+    // task analytics api routes
     $router->post('get-number-of-tasks-bystatus', 'TaskAnalyticsController@getNumberOfTasksByStatus');
     $router->post('get-tasks-duetoday', 'TaskAnalyticsController@getTasksDueToday');
+
     // notification api routes
-    $router->post('notify-user', 'TaskNotificationController@notifyuser');
     $router->post('count-notification-of-user', 'NotificationController@countnotificationofuser');
     $router->post('get-all-notifications', 'NotificationController@getallnotifications');
     $router->post('mark-as-read/{notificationId}', 'NotificationController@markAsRead');
