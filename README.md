@@ -75,7 +75,7 @@ be/
 
 -   Auth: https://suhaililyas.postman.co/workspace/Suhail-Ilyas's-Workspace~4412f15c-54f4-494c-862c-32a4bd5b7f8d/collection/45605541-0223385a-6b11-42ab-9a16-a7445f114811?action=share&creator=45605541
 
--   Notificatio: https://suhaililyas.postman.co/workspace/Suhail-Ilyas's-Workspace~4412f15c-54f4-494c-862c-32a4bd5b7f8d/collection/45605541-e2b05127-fffb-4961-abd6-78768126671d?action=share&creator=45605541
+-   Notification: https://suhaililyas.postman.co/workspace/Suhail-Ilyas's-Workspace~4412f15c-54f4-494c-862c-32a4bd5b7f8d/collection/45605541-e2b05127-fffb-4961-abd6-78768126671d?action=share&creator=45605541
 
 -   TaskAnalytics: https://suhaililyas.postman.co/workspace/Suhail-Ilyas's-Workspace~4412f15c-54f4-494c-862c-32a4bd5b7f8d/collection/45605541-cbace1ed-1ca0-488e-9879-463840f49edd?action=share&creator=45605541
 
