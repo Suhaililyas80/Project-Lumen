@@ -195,11 +195,15 @@ class TaskService
             $query->where('title', 'like', '%' . $filters['title'] . '%');
         }
 
-        $tasks = $query->limit($perPage)->offset(($page - 1) * $perPage)->get();
+        $tasks = $query->orderBy('created_at', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
         return [
-            'data' => $tasks,
-            'message' => 'Tasks retrieved successfully',
+            'success' => true,
+            'data' => $tasks->items(),
+            'current_page' => $tasks->currentPage(),
+            'last_page' => $tasks->lastPage(),
+            'per_page' => $tasks->perPage(),
+            'total' => $tasks->total(),
             'status' => 200,
         ];
     }

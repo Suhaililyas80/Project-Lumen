@@ -114,7 +114,7 @@ class TaskManagementController extends Controller
         $filters['title'] = $request->input('title');
         //for pagination
         $page = $request->input('page', 1);
-        $perPage = $request->input('per_page', 10);
+        $perPage = $request->input('per_page', 6);
         $taskService = new TaskService();
         $result = $taskService->getTasks($filters, $page, $perPage);
         return response()->json($result, $result['status']);
